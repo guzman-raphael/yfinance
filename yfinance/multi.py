@@ -90,7 +90,7 @@ def download(tickers, start=None, end=None, actions=False, threads=True,
                                    actions=actions, auto_adjust=auto_adjust,
                                    back_adjust=back_adjust,
                                    progress=(progress and i > 0), proxy=proxy,
-                                   rounding=rounding, **kwargs)
+                                   rounding=rounding)
         while len(shared._DFS) < len(tickers):
             _time.sleep(0.01)
 
@@ -100,7 +100,7 @@ def download(tickers, start=None, end=None, actions=False, threads=True,
             data = _download_one(ticker, period=period, interval=interval,
                                  start=start, end=end, prepost=prepost,
                                  actions=actions, auto_adjust=auto_adjust,
-                                 back_adjust=back_adjust, rounding=rounding, **kwargs)
+                                 back_adjust=back_adjust, rounding=rounding)
             shared._DFS[ticker.upper()] = data
             if progress:
                 shared._PROGRESS_BAR.animate()
@@ -108,7 +108,8 @@ def download(tickers, start=None, end=None, actions=False, threads=True,
     if progress:
         shared._PROGRESS_BAR.completed()
 
-    if shared._ERRORS:
+    debug_mode = kwargs["debug"] if "debug" in kwargs and isinstance(kwargs["debug"], bool) else True
+    if shared._ERRORS and debug_mode:
         print('\n%.f Failed download%s:' % (
             len(shared._ERRORS), 's' if len(shared._ERRORS) > 1 else ''))
         # print(shared._ERRORS)
@@ -161,10 +162,10 @@ def _download_one_threaded(ticker, start=None, end=None,
                            auto_adjust=False, back_adjust=False,
                            actions=False, progress=True, period="max",
                            interval="1d", prepost=False, proxy=None,
-                           rounding=False, **kwargs):
+                           rounding=False):
 
     data = _download_one(ticker, start, end, auto_adjust, back_adjust,
-                         actions, period, interval, prepost, proxy, rounding, **kwargs)
+                         actions, period, interval, prepost, proxy, rounding)
     shared._DFS[ticker.upper()] = data
     if progress:
         shared._PROGRESS_BAR.animate()
@@ -173,10 +174,10 @@ def _download_one_threaded(ticker, start=None, end=None,
 def _download_one(ticker, start=None, end=None,
                   auto_adjust=False, back_adjust=False,
                   actions=False, period="max", interval="1d",
-                  prepost=False, proxy=None, rounding=False, **kwargs):
+                  prepost=False, proxy=None, rounding=False):
 
     return Ticker(ticker).history(period=period, interval=interval,
                                   start=start, end=end, prepost=prepost,
                                   actions=actions, auto_adjust=auto_adjust,
                                   back_adjust=back_adjust, proxy=proxy,
-                                  rounding=rounding, many=True, **kwargs)
+                                  rounding=rounding, many=True)

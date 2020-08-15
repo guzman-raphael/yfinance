@@ -156,7 +156,6 @@ class TickerBase():
 
         # Work with errors
         debug_mode = True
-        print(kwargs)
         if "debug" in kwargs and isinstance(kwargs["debug"], bool):
             debug_mode = kwargs["debug"]
 
