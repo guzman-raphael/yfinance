@@ -42,9 +42,9 @@ from . import shared
 
 
 class TickerBase():
-    def __init__(self, ticker):
+    def __init__(self, ticker, session=None):
+        self._session = Session() if session is None else session
         self.ticker = ticker.upper()
-        self._session = Session()
         self._history = None
         self._base_url = 'https://query1.finance.yahoo.com'
         self._scrape_url = 'https://finance.yahoo.com/quote'
